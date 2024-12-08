@@ -1,24 +1,32 @@
-# Compiled Object files
-*.o
-*.obj
+# Исключить логи
+*.log
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# Исключить временные файлы системы
+*.tmp
+*.swp
 
-# Compiled Static libraries
-*.a
-*.lib
+# Игнорировать файлы виртуальных окружений и IDE
+.vscode/
+.idea/
+*.iml
 
-# Executables
-*.exe
+# Исключить Docker артефакты
+.dockerignore
+docker-compose.override.yml
+docker-compose*.bak
+.env
 
-# DUB
-.dub
-docs.json
-__dummy.html
-docs/
+# Исключить node_modules и зависимости
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
-# Code coverage
-*.lst
+# Исключить базу данных и кеш
+*.db
+*.sqlite3
+*.redis
+
+# Исключить файлы сборки
+dist/
+build/
