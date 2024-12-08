@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  frontend:
+    image: myproject/frontend:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - mynetwork
+
+  backend:
+    image: myproject/backend:latest
+    depends_on:
+      - database
+      - cache
+    networks:
+      - mynetwork
+
+  database:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    networks:
+      - mynetwork
+
+  cache:
+    image: redis:7
+    networks:
+      - mynetwork
+
+  proxy:
+    image: traefik:latest
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+      - "8080:8080"
+    networks:
+      - mynetwork
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  mynetwork:
+    driver: overlay
