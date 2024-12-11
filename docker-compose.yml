@@ -1,32 +1,43 @@
-version: '3.9'
+
 services:
   frontend:
-    image: myproject/frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     networks:
-      - mynetwork
+      - app_network
+    depends_on:
+      - backend
 
   backend:
-    image: myproject/backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - app_network
     depends_on:
       - database
       - cache
-    networks:
-      - mynetwork
 
   database:
     image: postgres:15
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
+      POSTGRES_DB: project_db
+    volumes:
+      - database_data:/var/lib/postgresql/data
     networks:
-      - mynetwork
+      - app_network
 
   cache:
     image: redis:7
     networks:
-      - mynetwork
+      - app_network
 
   proxy:
     image: traefik:latest
@@ -38,10 +49,20 @@ services:
       - "80:80"
       - "8080:8080"
     networks:
-      - mynetwork
+      - app_network
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+  ci-cd:
+    build:
+      context: ./ci-cd
+      dockerfile: Dockerfile
+    networks:
+      - app_network
+
 networks:
-  mynetwork:
+  app_network:
     driver: overlay
+
+volumes:
+  database_data:

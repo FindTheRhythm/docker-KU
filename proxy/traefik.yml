@@ -1,0 +1,22 @@
+# Основная конфигурация Traefik
+api:
+  dashboard: true  # Включить доступ к панели мониторинга
+
+entryPoints:
+  web:
+    address: ":80"  # HTTP на порту 80
+  websecure:
+    address: ":443"  # HTTPS на порту 443
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"  # Чтение конфигурации контейнеров
+    exposedByDefault: false  # Ограничить автоматическое использование всех контейнеров
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: your-email@example.com
+      storage: acme.json
+      httpChallenge:
+        entryPoint: web

@@ -1,0 +1,32 @@
+http:
+  routers:
+    frontend:
+      rule: "Host(`frontend.local`)"
+      entryPoints:
+        - web
+      service: frontend
+      middlewares:
+        - redirect-to-https
+
+    backend:
+      rule: "Host(`backend.local`)"
+      entryPoints:
+        - web
+      service: backend
+
+  services:
+    frontend:
+      loadBalancer:
+        servers:
+          - url: "http://frontend:3000"
+
+    backend:
+      loadBalancer:
+        servers:
+          - url: "http://backend:8000"
+
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
